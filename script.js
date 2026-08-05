@@ -1,1 +1,168 @@
-const intro=document.querySelector('#intro'),site=document.querySelector('#site'),openButton=document.querySelector('#openButton'),openLabel=document.querySelector('#openLabel'),musicControl=document.querySelector('#musicControl'),portrait=document.querySelector('#leibyPhoto'),reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;document.body.classList.add('locked');let ctx=null,nodes=[],playing=false,timer=null;async function loadPhoto(){const base='https://feliz-cumpleanos-leiby.vercel.app/';const parts=await Promise.all(['photo-1.txt','photo-2.txt','photo-3.txt'].map(async f=>{const r=await fetch(base+f,{cache:'no-store'});if(!r.ok)throw Error(f);return(await r.text()).trim()}));const src='data:image/webp;base64,'+parts.join('');await new Promise((resolve,reject)=>{portrait.onload=resolve;portrait.onerror=reject;portrait.src=src});intro.style.setProperty('--intro-photo',`linear-gradient(rgba(37,12,23,.48),rgba(37,12,23,.72)),url("${src}")`)}const photoReady=loadPhoto().catch(()=>{portrait.alt='No se pudo cargar la fotografía';}).finally(()=>{openButton.disabled=false;openLabel.textContent='Abrir mi detalle'});const frequencies={G4:392,A4:440,B4:493.88,C5:523.25,D5:587.33,E5:659.25,F5:698.46,G5:783.99},melody=[['G4',.28],['G4',.16],['A4',.42],['G4',.42],['C5',.42],['B4',.72],['G4',.28],['G4',.16],['A4',.42],['G4',.42],['D5',.42],['C5',.72],['G4',.28],['G4',.16],['G5',.42],['E5',.42],['C5',.42],['B4',.42],['A4',.72],['F5',.28],['F5',.16],['E5',.42],['C5',.42],['D5',.42],['C5',.82]];function stopMusic(){nodes.forEach(n=>{try{n.stop()}catch{}});nodes=[];clearTimeout(timer);ctx?.close();ctx=null;playing=false;musicControl.setAttribute('aria-pressed','false');musicControl.setAttribute('aria-label','Reproducir música')}function playMusic(){if(playing)return;const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;ctx=new AC;const master=ctx.createGain(),compressor=ctx.createDynamicsCompressor();master.gain.value=.42;compressor.threshold.value=-18;compressor.knee.value=20;compressor.ratio.value=5;master.connect(compressor).connect(ctx.destination);let cursor=ctx.currentTime+.06;melody.forEach(([note,duration])=>{const osc=ctx.createOscillator(),gain=ctx.createGain();osc.type='triangle';osc.frequency.value=frequencies[note];gain.gain.setValueAtTime(.0001,cursor);gain.gain.exponentialRampToValueAtTime(.38,cursor+.025);gain.gain.exponentialRampToValueAtTime(.0001,cursor+duration);osc.connect(gain).connect(master);osc.start(cursor);osc.stop(cursor+duration+.04);nodes.push(osc);cursor+=duration+.03});playing=true;musicControl.setAttribute('aria-pressed','true');musicControl.setAttribute('aria-label','Pausar música');timer=setTimeout(()=>{playing=false;nodes=[];ctx?.close();ctx=null;playMusic()},Math.max(0,(cursor-ctx.currentTime+.25)*1000))}function celebrate(){if(reduceMotion||typeof confetti!=='function')return;const end=Date.now()+1800,colors=['#9f294f','#d65f85','#f1c9d6','#fff'];(function frame(){confetti({particleCount:3,angle:60,spread:55,origin:{x:0},colors});confetti({particleCount:3,angle:120,spread:55,origin:{x:1},colors});Date.now()<end&&requestAnimationFrame(frame)})()}function petals(){if(reduceMotion||typeof gsap==='undefined')return;const layer=document.querySelector('.petals');for(let i=0;i<14;i++){const p=document.createElement('span');p.className='petal';p.style.left=Math.random()*100+'vw';layer.appendChild(p);gsap.to(p,{y:'115vh',x:-90+Math.random()*180,rotation:360+Math.random()*480,duration:10+Math.random()*9,delay:Math.random()*8,ease:'none',repeat:-1})}}async function reveal(){openButton.disabled=true;await photoReady;playMusic();site.setAttribute('aria-hidden','false');document.body.classList.remove('locked');if(reduceMotion||typeof gsap==='undefined'){intro.remove();site.style.cssText='opacity:1;visibility:visible';return}gsap.timeline({onComplete:()=>intro.remove()}).to('.intro__content',{y:-18,opacity:0,duration:.45}).to(intro,{opacity:0,duration:.72},'-=.08').set(site,{visibility:'visible'},'-=.55').to(site,{opacity:1,duration:.65},'-=.55').from('.portrait',{y:45,opacity:0,scale:.96,duration:.85},'-=.7').from('.hero__copy > *',{y:34,opacity:0,duration:.7,stagger:.1},'-=.55');celebrate();petals()}openButton.addEventListener('click',reveal);musicControl.addEventListener('click',()=>playing?stopMusic():playMusic());!reduceMotion&&typeof gsap!=='undefined'&&gsap.from('.intro__content > *',{y:24,opacity:0,duration:.8,stagger:.12,delay:.25});
+const intro = document.querySelector('#intro');
+const site = document.querySelector('#site');
+const openButton = document.querySelector('#openButton');
+const musicControl = document.querySelector('#musicControl');
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+let audioContext = null;
+let activeNodes = [];
+let musicTimer = null;
+let musicPlaying = false;
+
+const notes = {
+  G4: 392.0,
+  A4: 440.0,
+  B4: 493.88,
+  C5: 523.25,
+  D5: 587.33,
+  E5: 659.25,
+  F5: 698.46,
+  G5: 783.99,
+};
+
+const melody = [
+  ['G4', .28], ['G4', .16], ['A4', .42], ['G4', .42], ['C5', .42], ['B4', .72],
+  ['G4', .28], ['G4', .16], ['A4', .42], ['G4', .42], ['D5', .42], ['C5', .72],
+  ['G4', .28], ['G4', .16], ['G5', .42], ['E5', .42], ['C5', .42], ['B4', .42], ['A4', .72],
+  ['F5', .28], ['F5', .16], ['E5', .42], ['C5', .42], ['D5', .42], ['C5', .82],
+];
+
+function stopMusic() {
+  activeNodes.forEach((node) => {
+    try { node.stop(); } catch (_) {}
+  });
+  activeNodes = [];
+  clearTimeout(musicTimer);
+  audioContext?.close();
+  audioContext = null;
+  musicPlaying = false;
+  musicControl.setAttribute('aria-pressed', 'false');
+  musicControl.setAttribute('aria-label', 'Reproducir música');
+}
+
+function playMusic() {
+  if (musicPlaying) return;
+
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContextClass) return;
+
+  audioContext = new AudioContextClass();
+  const master = audioContext.createGain();
+  const compressor = audioContext.createDynamicsCompressor();
+
+  master.gain.value = 0.46;
+  compressor.threshold.value = -20;
+  compressor.knee.value = 18;
+  compressor.ratio.value = 5;
+  master.connect(compressor).connect(audioContext.destination);
+
+  let cursor = audioContext.currentTime + 0.06;
+
+  melody.forEach(([name, duration]) => {
+    const oscillator = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+
+    oscillator.type = 'triangle';
+    oscillator.frequency.value = notes[name];
+    gain.gain.setValueAtTime(0.0001, cursor);
+    gain.gain.exponentialRampToValueAtTime(0.38, cursor + 0.025);
+    gain.gain.exponentialRampToValueAtTime(0.0001, cursor + duration);
+
+    oscillator.connect(gain).connect(master);
+    oscillator.start(cursor);
+    oscillator.stop(cursor + duration + 0.04);
+    activeNodes.push(oscillator);
+    cursor += duration + 0.03;
+  });
+
+  musicPlaying = true;
+  musicControl.setAttribute('aria-pressed', 'true');
+  musicControl.setAttribute('aria-label', 'Pausar música');
+
+  const totalMs = Math.max(0, (cursor - audioContext.currentTime + 0.25) * 1000);
+  musicTimer = setTimeout(() => {
+    musicPlaying = false;
+    activeNodes = [];
+    audioContext?.close();
+    audioContext = null;
+    playMusic();
+  }, totalMs);
+}
+
+function celebrate() {
+  if (reduceMotion || typeof confetti !== 'function') return;
+
+  const end = Date.now() + 1700;
+  const colors = ['#9c3458', '#d47797', '#f4d9e1', '#ffffff'];
+
+  function frame() {
+    confetti({ particleCount: 3, angle: 60, spread: 52, origin: { x: 0 }, colors });
+    confetti({ particleCount: 3, angle: 120, spread: 52, origin: { x: 1 }, colors });
+    if (Date.now() < end) requestAnimationFrame(frame);
+  }
+
+  frame();
+}
+
+function startPetals() {
+  if (reduceMotion || typeof gsap === 'undefined') return;
+
+  const layer = document.querySelector('.petals');
+  for (let index = 0; index < 12; index += 1) {
+    const petal = document.createElement('span');
+    petal.className = 'petal';
+    petal.style.left = `${Math.random() * 100}vw`;
+    layer.appendChild(petal);
+
+    gsap.to(petal, {
+      y: '115vh',
+      x: -80 + Math.random() * 160,
+      rotation: 360 + Math.random() * 420,
+      duration: 10 + Math.random() * 8,
+      delay: Math.random() * 7,
+      ease: 'none',
+      repeat: -1,
+    });
+  }
+}
+
+function revealSite() {
+  playMusic();
+  site.setAttribute('aria-hidden', 'false');
+  document.body.classList.remove('is-locked');
+
+  if (reduceMotion || typeof gsap === 'undefined') {
+    intro.remove();
+    site.style.opacity = '1';
+    site.style.visibility = 'visible';
+    return;
+  }
+
+  gsap.timeline({ onComplete: () => intro.remove() })
+    .to('.intro__content', { y: -16, opacity: 0, duration: 0.42, ease: 'power2.in' })
+    .to(intro, { opacity: 0, duration: 0.7, ease: 'power2.inOut' }, '-=0.08')
+    .set(site, { visibility: 'visible' }, '-=0.52')
+    .to(site, { opacity: 1, duration: 0.62, ease: 'power2.out' }, '-=0.52')
+    .from('.portrait', { y: 34, opacity: 0, duration: 0.8, ease: 'power3.out' }, '-=0.4')
+    .from('.hero__copy > *', { y: 26, opacity: 0, duration: 0.62, stagger: 0.09, ease: 'power3.out' }, '-=0.65');
+
+  celebrate();
+  startPetals();
+}
+
+openButton.addEventListener('click', revealSite);
+musicControl.addEventListener('click', () => {
+  if (musicPlaying) stopMusic();
+  else playMusic();
+});
+
+if (!reduceMotion && typeof gsap !== 'undefined') {
+  gsap.from('.intro__content > *', {
+    y: 18,
+    opacity: 0,
+    duration: 0.75,
+    stagger: 0.1,
+    ease: 'power3.out',
+    delay: 0.2,
+  });
+}

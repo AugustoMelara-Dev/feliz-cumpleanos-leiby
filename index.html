@@ -1,31 +1,34 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#f9f1f3" />
-  <meta name="description" content="Un detalle de cumpleaños hecho con mucho cariño para Leiby." />
-  <meta property="og:title" content="Feliz cumpleaños, Leiby 🌹" />
-  <meta property="og:description" content="Un detalle hecho con cariño para una persona muy especial." />
-  <title>Feliz cumpleaños, Leiby 🌹</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f8f3f1">
+  <meta name="description" content="Un detalle de cumpleaños hecho con cariño para Leiby.">
+  <meta property="og:title" content="Feliz cumpleaños, Leiby">
+  <meta property="og:description" content="Un detalle hecho con mucho cariño.">
+  <meta property="og:image" content="https://raw.githubusercontent.com/AugustoMelara-Dev/feliz-cumpleanos-leiby/gh-pages/WhatsApp%20Image%202026-08-04%20at%206.59.46%20PM.jpeg">
+  <title>Feliz cumpleaños, Leiby</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
 </head>
-<body>
-  <div class="noise" aria-hidden="true"></div>
+<body class="is-locked">
   <div class="petals" aria-hidden="true"></div>
 
-  <section class="intro" id="intro">
-    <div class="intro__glow"></div>
+  <section class="intro" id="intro" aria-label="Abrir felicitación">
+    <div class="intro__shade"></div>
     <div class="intro__content">
-      <span class="intro__rose" aria-hidden="true">🌹</span>
-      <p>Un pequeño detalle para alguien especial</p>
+      <span class="rose-mark" aria-hidden="true">🌹</span>
+      <p>Un detalle hecho con cariño</p>
       <h1>Para Leiby</h1>
-      <button class="open-button" id="openButton" type="button" disabled>
-        <span id="openLabel">Preparando…</span>
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      <button class="open-button" id="openButton" type="button">
+        Abrir mi detalle
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 12h14M13 6l6 6-6 6"></path>
+        </svg>
       </button>
       <small>La música comenzará al abrirlo</small>
     </div>
@@ -33,46 +36,50 @@
 
   <main class="site" id="site" aria-hidden="true">
     <header class="topbar">
-      <a class="brand" href="#inicio" aria-label="Ir al inicio">Para Leiby <span>🌹</span></a>
+      <a class="brand" href="#inicio">Para Leiby</a>
       <button class="music-control" id="musicControl" type="button" aria-label="Pausar música" aria-pressed="true">
-        <span class="music-control__bars" aria-hidden="true"><i></i><i></i><i></i></span>
-        <span class="music-control__label">Música</span>
+        <span class="music-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span>Música</span>
       </button>
     </header>
 
     <section class="hero" id="inicio">
-      <div class="hero__copy">
-        <p class="hero__date">4 de agosto · un día bonito</p>
-        <h2>Feliz cumpleaños,<br><em>Leiby.</em></h2>
-        <p class="hero__lead">Espero que haya pasado un día muy bonito junto a su familia. Que Dios la bendiga mucho en este nuevo año de vida y que nunca le falten razones para sonreír.</p>
-        <a class="scroll-link" href="#mensaje">Leer el mensaje <span aria-hidden="true">↓</span></a>
-      </div>
-
       <figure class="portrait">
-        <div class="portrait__frame"><img id="leibyPhoto" src="" alt="Leiby con un vestido azul, un pastel y un ramo de flores" /></div>
-        <figcaption>Por cierto… se ve preciosa en esta foto. Bueno, no solo en esta, sino en todas.</figcaption>
-        <span class="portrait__rose portrait__rose--one" aria-hidden="true">🌹</span>
-        <span class="portrait__rose portrait__rose--two" aria-hidden="true">🌹</span>
+        <div class="portrait__image">
+          <img src="https://raw.githubusercontent.com/AugustoMelara-Dev/feliz-cumpleanos-leiby/gh-pages/WhatsApp%20Image%202026-08-04%20at%206.59.46%20PM.jpeg" alt="Leiby con un vestido azul, un pastel y un ramo de flores" fetchpriority="high">
+        </div>
+        <figcaption>Se ve preciosa en esta foto. Bueno, no solo en esta, sino en todas.</figcaption>
       </figure>
+
+      <div class="hero__copy">
+        <p class="date">4 de agosto</p>
+        <h2>Feliz cumpleaños, <em>Leiby</em></h2>
+        <p class="lead">Espero que haya pasado un día muy bonito junto a su familia. Que Dios la bendiga mucho en este nuevo año de vida y que nunca le falten razones para sonreír.</p>
+        <a class="message-link" href="#mensaje">Leer el mensaje <span aria-hidden="true">↓</span></a>
+      </div>
     </section>
 
     <section class="message" id="mensaje">
-      <div class="message__ornament" aria-hidden="true">🌹</div>
-      <div class="message__content">
-        <p class="section-label">De corazón</p>
-        <h3>Unas palabras para usted</h3>
+      <div class="message__line" aria-hidden="true"></div>
+      <p class="message__label">De corazón</p>
+      <h3>Unas palabras para usted</h3>
+
+      <div class="message__body">
         <p>Me alegra mucho haber tenido la oportunidad de conocerla un poco más. Es una persona muy agradable, dedicada y con una forma de ser muy bonita.</p>
+
         <p>Deseo que este nuevo año de vida esté lleno de bendiciones. Que cada meta que tenga pueda ir cumpliéndose a su tiempo y que siempre encuentre personas que la valoren, la cuiden y le aporten cosas buenas.</p>
-        <p>Y aprovechando que hoy es su cumpleaños, también quería decirle que se ve preciosa en esta foto; bueno, no solo en esta, sino en todas las que sale. El vestido azul le queda muy bonito, pero creo que lo que más resalta es su linda sonrisa.</p>
-        <p class="message__closing">Espero que disfrute mucho este nuevo año de vida. Feliz cumpleaños.</p>
-        <p class="signature">Con aprecio,<br><span>Augusto</span></p>
+
+        <p>Y aprovechando que hoy es su cumpleaños, también quería decirle que se ve preciosa en esta foto. Bueno, no solo en esta, sino en todas las fotos en las que sale. El vestido azul le queda muy bonito, pero creo que lo que más resalta es su linda sonrisa.</p>
+
+        <p class="message__closing">Espero que disfrute mucho este nuevo año de vida. Feliz cumpleaños, Leiby.</p>
       </div>
+
+      <p class="signature">Con aprecio<br><span>Augusto</span></p>
     </section>
 
     <footer>
-      <div class="footer__rose" aria-hidden="true">🌹</div>
+      <span aria-hidden="true">🌹</span>
       <p>Hecho con cariño para Leiby</p>
-      <small>Feliz cumpleaños</small>
     </footer>
   </main>
 

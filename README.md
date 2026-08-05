@@ -1,11 +1,10 @@
-# Feliz cumpleaños, Leiby 🌹
+# Feliz cumpleaños, Leiby
 
-Sitio de cumpleaños personal, responsivo y desplegado en Vercel.
+Sitio personal de cumpleaños con diseño responsivo, fotografía real, música y animaciones suaves.
 
-## Características
+## Archivos principales
 
-- Diseño floral minimalista inspirado en rosas.
-- Fotografía optimizada e integrada en la experiencia.
-- Animaciones con GSAP y canvas-confetti.
-- Música de cumpleaños con Howler.js y control de reproducción.
-- Adaptado para celulares, tabletas y computadoras.
+- `index.html`: contenido y estructura.
+- `styles.css`: diseño adaptado a celulares, tabletas y computadoras.
+- `script.js`: música, transición inicial, pétalos y confeti.
+- La fotografía principal está almacenada en la rama `gh-pages` y se utiliza directamente en la página.
